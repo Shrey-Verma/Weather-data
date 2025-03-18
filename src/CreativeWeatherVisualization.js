@@ -428,54 +428,54 @@ const CreativeWeatherVisualization = () => {
         return (
           <div>
             <h3>Temperature Anomaly by Decade and Season</h3>
-            <p>
-              This chart shows how temperature anomalies have changed by decade and season.
-              Positive values (red) indicate temperatures above the 1951-1980 baseline,
-              while negative values (blue) indicate temperatures below baseline.
-            </p>
-            <div style={{ height: '500px' }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={heatmapData}
-                  layout="vertical"
-                  margin={{ top: 20, right: 30, left: 70, bottom: 5 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis 
-                    type="number" 
-                    domain={[-2, 6]} 
-                    label={{ value: 'Temperature Anomaly (°F)', position: 'bottom' }}
-                  />
-                  <YAxis dataKey="name" type="category" width={80} />
-                  <Tooltip />
-                  <Legend />
-                  <ReferenceLine x={0} stroke="#000" />
-                  <Bar 
-                    dataKey="Winter" 
-                    name="Winter" 
-                    fill={seasonColors.winter} 
-                    background={{ fill: '#eee' }}
-                  />
-                  <Bar 
-                    dataKey="Spring" 
-                    name="Spring" 
-                    fill={seasonColors.spring}
-                  />
-                  <Bar 
-                    dataKey="Summer" 
-                    name="Summer" 
-                    fill={seasonColors.summer}
-                  />
-                  <Bar 
-                    dataKey="Fall" 
-                    name="Fall" 
-                    fill={seasonColors.fall}
-                  />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-            <div className="insights">
-              <h4>Key Insights:</h4>
+      <p>
+        This chart shows how temperature anomalies have changed by decade and season.
+        Positive values indicate temperatures above the 1951-1980 baseline,
+        while negative values indicate temperatures below baseline.
+      </p>
+      <div style={{ height: '500px' }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart
+            data={heatmapData}
+            layout="vertical"
+            margin={{ top: 20, right: 30, left: 70, bottom: 5 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis 
+              type="number" 
+              domain={[-2, 6]} 
+              label={{ value: 'Temperature Anomaly (°F)', position: 'bottom' }}
+            />
+            <YAxis dataKey="name" type="category" width={80} />
+            <Tooltip />
+            <Legend />
+            <ReferenceLine x={0} stroke="#000" />
+            <Bar 
+              dataKey="Winter" 
+              name="Winter" 
+              fill={seasonColors.winter} 
+              background={{ fill: '#eee' }}
+            />
+            <Bar 
+              dataKey="Spring" 
+              name="Spring" 
+              fill={seasonColors.spring}
+            />
+            <Bar 
+              dataKey="Summer" 
+              name="Summer" 
+              fill={seasonColors.summer}
+            />
+            <Bar 
+              dataKey="Fall" 
+              name="Fall" 
+              fill={seasonColors.fall}
+            />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+      <div className="insights">
+        <h4>Key Insights:</h4>
               <ul>
                 <li>The 1960s was the only decade that showed cooling across all seasons relative to the baseline</li>
                 <li>The 2020s show the most dramatic warming across all seasons</li>
