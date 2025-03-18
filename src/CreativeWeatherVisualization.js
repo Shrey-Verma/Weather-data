@@ -47,7 +47,7 @@ const CreativeWeatherVisualization = () => {
       try {
         setLoading(true);
         
-        const response = await fetch(`${process.env.PUBLIC_URL}/data/weather.csv`);
+        const response = await fetch(`weather.csv`);
         const fileContent = await response.text();
         
         const parsedData = Papa.parse(fileContent, {
