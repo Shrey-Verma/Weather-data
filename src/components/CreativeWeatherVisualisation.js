@@ -454,24 +454,24 @@ const CreativeWeatherVisualization = () => {
             <Legend verticalAlign="top" height={36} />
             <ReferenceLine x={0} stroke="#000" />
             <Bar 
-              dataKey="Winter" 
-              name="Winter" 
+              dataKey="winter" 
+              name="winter" 
               fill={seasonColors.winter} 
               background={{ fill: '#f5f5f5' }}
             />
             <Bar 
-              dataKey="Spring" 
-              name="Spring" 
+              dataKey="spring" 
+              name="spring" 
               fill={seasonColors.spring}
             />
             <Bar 
-              dataKey="Summer" 
-              name="Summer" 
+              dataKey="summer" 
+              name="summer" 
               fill={seasonColors.summer}
             />
             <Bar 
-              dataKey="Fall" 
-              name="Fall" 
+              dataKey="fall" 
+              name="fall" 
               fill={seasonColors.fall}
             />
           </BarChart>
