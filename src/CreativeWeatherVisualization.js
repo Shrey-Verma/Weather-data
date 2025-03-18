@@ -415,96 +415,76 @@ const CreativeWeatherVisualization = () => {
           </div>
         );
       
-      case 'anomalyHeatmap':
-        // Prepare data for decade anomaly heatmap
-        const heatmapData = decadeAnomalies.map(d => ({
-          name: d.label,
-          Winter: d.winter,
-          Spring: d.spring,
-          Summer: d.summer,
-          Fall: d.fall
-        }));
-        
-        return (
-          <div>
-            <h3>Temperature Anomaly by Decade and Season</h3>
-      <p>
-        This chart shows how temperature anomalies have changed by decade and season.
-        Positive values indicate temperatures above the 1951-1980 baseline,
-        while negative values indicate temperatures below baseline.
-      </p>
-      <div style={{ height: '500px' }}>
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart
-            data={heatmapData}
-            layout="vertical"
-            margin={{ top: 20, right: 30, left: 70, bottom: 5 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis 
-              type="number" 
-              domain={[-2, 6]} 
-              label={{ value: 'Temperature Anomaly (°F)', position: 'bottom' }}
-            />
-            <YAxis dataKey="name" type="category" width={80} />
-            <Tooltip />
-            <Legend content={(props) => {
-  const { payload } = props;
-  return (
-    <div style={{ display: 'flex', justifyContent: 'center', margin: '10px 0' }}>
-      {payload.map((entry, index) => (
-        <div key={`item-${index}`} style={{ marginRight: 20 }}>
-          <span style={{ 
-            display: 'inline-block', 
-            width: 10, 
-            height: 10, 
-            backgroundColor: entry.color, 
-            marginRight: 5 
-          }}></span>
-          <span>{entry.value}</span>
-        </div>
-      ))}
-    </div>
-  );
-}} />
-            <ReferenceLine x={0} stroke="#000" />
-            <Bar 
-  dataKey="Winter" 
-  name="Winter" 
-  fill={seasonColors.winter} 
-  background={{ fill: '#eee' }}
-  barSize={20}
-/>
-            
-            <Bar 
-              dataKey="Spring" 
-              name="Spring" 
-              fill={seasonColors.spring}
-            />
-            <Bar 
-              dataKey="Summer" 
-              name="Summer" 
-              fill={seasonColors.summer}
-            />
-            <Bar 
-              dataKey="Fall" 
-              name="Fall" 
-              fill={seasonColors.fall}
-            />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-      <div className="insights">
-        <h4>Key Insights:</h4>
-              <ul>
-                <li>The 1960s was the only decade that showed cooling across all seasons relative to the baseline</li>
-                <li>The 2020s show the most dramatic warming across all seasons</li>
-                <li>Winter in the 2020s shows the largest temperature anomaly, over 5°F warmer than the baseline</li>
-                <li>A clear warming trend is visible starting from the 1980s</li>
-              </ul>
+        case 'anomalyHeatmap':
+          // Prepare data for decade anomaly heatmap with explicit format
+          const heatmapData = decadeAnomalies.map(d => ({
+            name: d.label,
+            Winter: d.winter || 0,  // Use || 0 to handle null/undefined
+            Spring: d.spring || 0,
+            Summer: d.summer || 0,
+            Fall: d.fall || 0
+          }));
+          
+          return (
+            <div>
+              <h3>Temperature Anomaly by Decade and Season</h3>
+              <p>
+                This chart shows how temperature anomalies have changed by decade and season.
+                Positive values indicate temperatures above the 1951-1980 baseline,
+                while negative values indicate temperatures below baseline.
+              </p>
+              <div style={{ height: '500px' }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={heatmapData}
+                    layout="vertical"
+                    margin={{ top: 20, right: 30, left: 70, bottom: 5 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis 
+                      type="number" 
+                      domain={[-2, 6]} 
+                      label={{ value: 'Temperature Anomaly (°F)', position: 'bottom' }}
+                    />
+                    <YAxis dataKey="name" type="category" width={80} />
+                    <Tooltip formatter={(value) => [value.toFixed(2) + '°F', '']} />
+                    <Legend />
+                    <ReferenceLine x={0} stroke="#000" />
+                    <Bar 
+                      dataKey="Winter" 
+                      name="Winter" 
+                      fill={seasonColors.winter} 
+                      background={{ fill: '#eee' }}
+                    />
+                    <Bar 
+                      dataKey="Spring" 
+                      name="Spring" 
+                      fill={seasonColors.spring}
+                    />
+                    <Bar 
+                      dataKey="Summer" 
+                      name="Summer" 
+                      fill={seasonColors.summer}
+                    />
+                    <Bar 
+                      dataKey="Fall" 
+                      name="Fall" 
+                      fill={seasonColors.fall}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="insights">
+                <h4>Key Insights:</h4>
+                <ul>
+                  <li>The 1960s was the only decade that showed cooling across all seasons relative to the baseline</li>
+                  <li>The 2020s show the most dramatic warming across all seasons</li>
+                  <li>Winter in the 2020s shows the largest temperature anomaly, over 5°F warmer than the baseline</li>
+                  <li>A clear warming trend is visible starting from the 1980s</li>
+                </ul>
+              </div>
             </div>
-          </div>
-        );
+          );
       
       case 'extremeDays':
         return (
