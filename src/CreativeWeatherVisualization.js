@@ -426,60 +426,77 @@ const CreativeWeatherVisualization = () => {
   }));
   
   return (
-    <div>
-      <h3>Temperature Anomaly by Decade and Season</h3>
-      <p>
+    <div className="w-full">
+      <h3 className="text-xl font-bold mb-2">Temperature Anomaly by Decade and Season</h3>
+      <p className="mb-4">
         This chart shows how temperature anomalies have changed by decade and season.
         Positive values indicate temperatures above the 1951-1980 baseline,
         while negative values indicate temperatures below baseline.
       </p>
-      <div style={{ height: '500px' }}>
+      
+      <div className="h-96 w-full">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={heatmapData}
             layout="vertical"
-            margin={{ top: 20, right: 30, left: 70, bottom: 5 }}
+            margin={{ top: 20, right: 30, left: 70, bottom: 20 }}
           >
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis 
               type="number" 
               domain={[-2, 6]} 
               label={{ value: 'Temperature Anomaly (°F)', position: 'insideBottom', offset: -5 }}
+              tickCount={9}
             />
-            <YAxis dataKey="name" type="category" width={80} />
+            <YAxis 
+              dataKey="name" 
+              type="category" 
+              width={70} 
+            />
             <Tooltip 
               formatter={(value, name) => [`${value.toFixed(2)}°F`, `${name}`]}
               labelFormatter={(label) => `Decade: ${label}`}
             />
-            <Legend verticalAlign="top" height={36} />
-            <ReferenceLine x={0} stroke="#000" />
+            <Legend 
+              verticalAlign="top" 
+              height={36}
+            />
+            <ReferenceLine x={0} stroke="#000" strokeWidth={2} />
             <Bar 
               dataKey="Winter" 
               name="Winter" 
-              fill={seasonColors.winter} 
-              background={{ fill: '#f5f5f5' }}
+              fill="#7CB9E8" 
+              isAnimationActive={false}
+              barSize={20}
             />
             <Bar 
               dataKey="Spring" 
               name="Spring" 
-              fill={seasonColors.spring}
+              fill="#90EE90" 
+              isAnimationActive={false}
+              barSize={20}
             />
             <Bar 
               dataKey="Summer" 
               name="Summer" 
-              fill={seasonColors.summer}
+              fill="#FFA500" 
+              isAnimationActive={false}
+              barSize={20}
             />
             <Bar 
               dataKey="Fall" 
               name="Fall" 
-              fill={seasonColors.fall}
+              fill="#C3B1E1" 
+              isAnimationActive={false}
+              barSize={20}
             />
           </BarChart>
         </ResponsiveContainer>
       </div>
-      <div className="insights">
-        <h4>Key Insights:</h4>
-        <ul>
+      
+      <div className="mt-4">
+        <h4 className="text-lg font-semibold">Key Insights:</h4>
+        <ul className="list-disc pl-5 mt-2">
           <li>The 1960s was the only decade that showed cooling across all seasons relative to the baseline</li>
           <li>The 2020s show the most dramatic warming across all seasons</li>
           <li>Winter in the 2020s shows the largest temperature anomaly, over 5°F warmer than the baseline</li>
