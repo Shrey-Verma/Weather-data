@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { 
   LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, 
-  Tooltip, Legend, ResponsiveContainer, ComposedChart, Area,
-  ScatterChart, Scatter, ZAxis, RadarChart, PolarGrid, 
+  Tooltip, Legend, ResponsiveContainer, ComposedChart, ReferenceArea,
+  RadarChart, PolarGrid, 
   PolarAngleAxis, PolarRadiusAxis, Radar, ReferenceLine
 } from 'recharts';
 import Papa from 'papaparse';
 
 // Custom colors for seasons
 const seasonColors = {
-  winter: '#6ab4ff', // Light blue
-  spring: '#95e06c', // Light green
-  summer: '#ff9a3c', // Orange
-  fall: '#c17fff'    // Purple
+  winter: '#6ab4ff', 
+  spring: '#95e06c', 
+  summer: '#ff9a3c', 
+  fall: '#c17fff'    
 };
 
 const CustomTooltip = ({ active, payload, label }) => {
@@ -47,7 +47,7 @@ const CreativeWeatherVisualization = () => {
       try {
         setLoading(true);
         
-        const response = await fetch('/weather.csv');
+        const response = await fetch(`weather.csv`);
         const fileContent = await response.text();
         
         const parsedData = Papa.parse(fileContent, {
@@ -237,13 +237,14 @@ const CreativeWeatherVisualization = () => {
           let season;
           
           // Determine season based on day of year
-          if (dayNum <= 59 || dayNum > 335) { // Approx. Jan 1-Feb 28, Dec 1-31
+          // Make sure these conditions cover all possible days and don't overlap
+          if (dayNum <= 59 || dayNum > 335) { // Winter
             season = 'Winter';
-          } else if (dayNum <= 151) { // Approx. Mar 1-May 31
+          } else if (dayNum <= 151) { // Spring
             season = 'Spring';
-          } else if (dayNum <= 243) { // Approx. Jun 1-Aug 31
+          } else if (dayNum <= 243) { // Summer
             season = 'Summer';
-          } else { // Approx. Sep 1-Nov 30
+          } else { // Fall
             season = 'Fall';
           }
           
@@ -530,125 +531,162 @@ const CreativeWeatherVisualization = () => {
         );
       
       case 'seasonalCycle':
-        // Get a smoothed version of the year cycle (7-day moving average)
-        const smoothedCycle = [...yearCycleData];
-        for (let i = 3; i < smoothedCycle.length - 3; i++) {
-          const windowValues = [];
-          for (let j = i - 3; j <= i + 3; j++) {
-            if (smoothedCycle[j].avgTemp !== null) {
-              windowValues.push(smoothedCycle[j].avgTemp);
+        
+          // Get a smoothed version of the year cycle (7-day moving average)
+          const smoothedCycle = [...yearCycleData];
+          for (let i = 3; i < smoothedCycle.length - 3; i++) {
+            const windowValues = [];
+            for (let j = i - 3; j <= i + 3; j++) {
+              if (smoothedCycle[j].avgTemp !== null) {
+                windowValues.push(smoothedCycle[j].avgTemp);
+              }
+            }
+            if (windowValues.length > 0) {
+              const avg = windowValues.reduce((sum, val) => sum + val, 0) / windowValues.length;
+              smoothedCycle[i].smoothedTemp = avg;
             }
           }
-          if (windowValues.length > 0) {
-            const avg = windowValues.reduce((sum, val) => sum + val, 0) / windowValues.length;
-            smoothedCycle[i].smoothedTemp = avg;
-          }
-        }
+          
+          // Create better defined season boundaries for visualization
+          const enhancedData = smoothedCycle.map(d => {
+            // Explicitly check each day's season correctly
+            let season;
+            if ((d.dayOfYear >= 1 && d.dayOfYear <= 59) || (d.dayOfYear >= 335 && d.dayOfYear <= 366)) {
+              season = 'Winter';
+            } else if (d.dayOfYear >= 60 && d.dayOfYear <= 151) {
+              season = 'Spring';
+            } else if (d.dayOfYear >= 152 && d.dayOfYear <= 243) {
+              season = 'Summer';
+            } else {
+              season = 'Fall';
+            }
+            
+            return {
+              ...d,
+              correctedSeason: season
+            };
+          });
         
         return (
           <div>
-            <h3>Annual Temperature Cycle (1950-2021)</h3>
-            <p>
-              This chart shows the average temperature for each day of the year,
-              highlighting seasonal patterns. The colored background shows the four seasons.
-            </p>
-            <div style={{ height: '500px' }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <ComposedChart
-                  data={smoothedCycle}
-                  margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
-                  <XAxis 
-                    dataKey="dayOfYear" 
-                    name="Day of Year"
-                    domain={[1, 366]}
-                    tickCount={12}
-                    tickFormatter={(tick) => {
-                      const date = new Date(2020, 0, tick);
-                      return date.toLocaleString('default', { month: 'short' });
-                    }}
-                  />
-                  <YAxis label={{ value: 'Temperature (°F)', angle: -90, position: 'insideLeft' }} />
-                  <Tooltip
-                    formatter={(value, name) => [value.toFixed(1) + '°F', name]}
-                    labelFormatter={(label) => {
-                      const date = new Date(2020, 0, label);
-                      return date.toLocaleString('default', { month: 'long', day: 'numeric' });
-                    }}
-                  />
-                  <Legend />
-                  
-                  {/* Add colored backgrounds for seasons */}
-                  <Area 
-                    type="monotone"
-                    dataKey="avgTemp"
-                    fill={seasonColors.winter}
-                    fillOpacity={0.2}
-                    stroke="none"
-                    name="Winter Temperature"
-                    activeDot={false}
-                    isAnimationActive={false}
-                    hide={true}
-                    data={smoothedCycle.filter(d => d.season === 'Winter')}
-                  />
-                  <Area 
-                    type="monotone"
-                    dataKey="avgTemp"
-                    fill={seasonColors.spring}
-                    fillOpacity={0.2}
-                    stroke="none"
-                    name="Spring Temperature"
-                    activeDot={false}
-                    isAnimationActive={false}
-                    hide={true}
-                    data={smoothedCycle.filter(d => d.season === 'Spring')}
-                  />
-                  <Area 
-                    type="monotone"
-                    dataKey="avgTemp"
-                    fill={seasonColors.summer}
-                    fillOpacity={0.2}
-                    stroke="none"
-                    name="Summer Temperature"
-                    activeDot={false}
-                    isAnimationActive={false}
-                    hide={true}
-                    data={smoothedCycle.filter(d => d.season === 'Summer')}
-                  />
-                  <Area 
-                    type="monotone"
-                    dataKey="avgTemp"
-                    fill={seasonColors.fall}
-                    fillOpacity={0.2}
-                    stroke="none"
-                    name="Fall Temperature"
-                    activeDot={false}
-                    isAnimationActive={false}
-                    hide={true}
-                    data={smoothedCycle.filter(d => d.season === 'Fall')}
-                  />
-                  
-                  <Line
-                    type="monotone"
-                    dataKey="smoothedTemp"
-                    stroke="#ff5252"
-                    name="Daily Average Temperature"
-                    dot={false}
-                    strokeWidth={2}
-                  />
-                </ComposedChart>
-              </ResponsiveContainer>
-            </div>
-            <div className="insights">
-              <h4>Key Insights:</h4>
-              <ul>
-                <li>The annual temperature cycle shows a clear sinusoidal pattern</li>
-                <li>The warmest days typically occur in late July, about a month after the summer solstice</li>
-                <li>The coldest days typically occur in late January, about a month after the winter solstice</li>
-                <li>Spring warming happens more gradually than fall cooling, creating asymmetry in the annual cycle</li>
-              </ul>
-            </div>
+             
+             <h3>Annual Temperature Cycle (1950-2021)</h3>
+      <p>
+        This chart shows the average temperature for each day of the year,
+        highlighting seasonal patterns. The colored background shows the four seasons.
+      </p>
+      <div style={{ height: '500px' }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <ComposedChart
+            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
+            <XAxis 
+              dataKey="dayOfYear" 
+              name="Day of Year"
+              type="number"
+              domain={[1, 366]}
+              ticks={[15, 45, 75, 105, 135, 165, 195, 225, 255, 285, 315, 345]} 
+              tickFormatter={(tick) => {
+                const date = new Date(2020, 0, tick);
+                return date.toLocaleString('default', { month: 'short' });
+              }}
+              padding={{ left: 10, right: 10 }}
+            />
+            <YAxis 
+              label={{ value: 'Temperature (°F)', angle: -90, position: 'insideLeft' }} 
+              domain={[0, 85]} 
+            />
+            <Tooltip
+              formatter={(value, name) => {
+                if (value === null) return ['', ''];
+                if (name === 'Daily Average Temperature') {
+                  return [`${value.toFixed(1)}°F`, name];
+                }
+                return ['', ''];
+              }}
+              labelFormatter={(label) => {
+                const date = new Date(2020, 0, label);
+                return date.toLocaleString('default', { month: 'long', day: 'numeric' });
+              }}
+            />
+            <Legend />
+            
+            {/* Winter data - using a reference area for Jan-Feb and Dec */}
+            <ReferenceArea 
+              x1={1} 
+              x2={59} 
+              y1={0} 
+              y2={85} 
+              fill={seasonColors.winter} 
+              fillOpacity={0.2} 
+              stroke="none" 
+            />
+            <ReferenceArea 
+              x1={335} 
+              x2={366} 
+              y1={0} 
+              y2={85} 
+              fill={seasonColors.winter} 
+              fillOpacity={0.2} 
+              stroke="none" 
+            />
+            
+            {/* Spring data */}
+            <ReferenceArea 
+              x1={60} 
+              x2={151} 
+              y1={0} 
+              y2={85} 
+              fill={seasonColors.spring} 
+              fillOpacity={0.2} 
+              stroke="none" 
+            />
+            
+            {/* Summer data */}
+            <ReferenceArea 
+              x1={152} 
+              x2={243} 
+              y1={0} 
+              y2={85} 
+              fill={seasonColors.summer} 
+              fillOpacity={0.2} 
+              stroke="none" 
+            />
+            
+            {/* Fall data */}
+            <ReferenceArea 
+              x1={244} 
+              x2={334} 
+              y1={0} 
+              y2={85} 
+              fill={seasonColors.fall} 
+              fillOpacity={0.2} 
+              stroke="none" 
+            />
+            
+            {/* Display the actual temperature line on top */}
+            <Line
+              data={enhancedData}
+              type="monotone"
+              dataKey="smoothedTemp"
+              stroke="#ff5252"
+              name="Daily Average Temperature"
+              dot={false}
+              strokeWidth={2}
+            />
+          </ComposedChart>
+        </ResponsiveContainer>
+      </div>
+      <div className="insights">
+        <h4>Key Insights:</h4>
+        <ul>
+          <li>The annual temperature cycle shows a clear sinusoidal pattern</li>
+          <li>The warmest days typically occur in late July, about a month after the summer solstice</li>
+          <li>The coldest days typically occur in late January, about a month after the winter solstice</li>
+          <li>Spring warming happens more gradually than fall cooling, creating asymmetry in the annual cycle</li>
+        </ul>
+      </div>
           </div>
         );
         
@@ -727,18 +765,6 @@ const CreativeWeatherVisualization = () => {
           >
             Extreme Temperature Days
           </button>
-          <button
-            onClick={() => setActiveChart('seasonalCycle')}
-            style={{
-              padding: '10px 15px',
-              backgroundColor: activeChart === 'seasonalCycle' ? '#4a6fa5' : '#e0e0e0',
-              color: activeChart === 'seasonalCycle' ? 'white' : 'black',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontWeight: activeChart === 'extremeDays' ? 'bold' : 'normal'
-            }}
-          >Help Button</button>
           <button
             onClick={() => setActiveChart('seasonalCycle')}
             style={{
