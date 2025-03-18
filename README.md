@@ -33,7 +33,7 @@ This project visualizes and analyzes historical weather data from Cornell Tech s
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/cornell-tech-weather.git
+   git clone https://github.com/Shrey-Verma/Weather-data.git
    cd cornell-tech-weather
    ```
 
@@ -62,6 +62,7 @@ cornell-tech-weather/
 │   ├── favicon.ico         # App icon
 │   └── index.html          # HTML template
 ├── src/
+│   ├── components/WeatherVisualization.js  
 │   ├── App.js              # Main application component
 │   ├── App.css             # Main application styles
 │   ├── CreativeWeatherVisualization.js  # Core visualization component
