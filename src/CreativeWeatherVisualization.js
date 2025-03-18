@@ -448,14 +448,34 @@ const CreativeWeatherVisualization = () => {
             />
             <YAxis dataKey="name" type="category" width={80} />
             <Tooltip />
-            <Legend />
+            <Legend content={(props) => {
+  const { payload } = props;
+  return (
+    <div style={{ display: 'flex', justifyContent: 'center', margin: '10px 0' }}>
+      {payload.map((entry, index) => (
+        <div key={`item-${index}`} style={{ marginRight: 20 }}>
+          <span style={{ 
+            display: 'inline-block', 
+            width: 10, 
+            height: 10, 
+            backgroundColor: entry.color, 
+            marginRight: 5 
+          }}></span>
+          <span>{entry.value}</span>
+        </div>
+      ))}
+    </div>
+  );
+}} />
             <ReferenceLine x={0} stroke="#000" />
             <Bar 
-              dataKey="Winter" 
-              name="Winter" 
-              fill={seasonColors.winter} 
-              background={{ fill: '#eee' }}
-            />
+  dataKey="Winter" 
+  name="Winter" 
+  fill={seasonColors.winter} 
+  background={{ fill: '#eee' }}
+  barSize={20}
+/>
+            
             <Bar 
               dataKey="Spring" 
               name="Spring" 
