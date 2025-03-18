@@ -47,7 +47,7 @@ const WeatherVisualization = ({ initialTab }) => {
       try {
         setLoading(true);
         // Use fetch API instead of window.fs for browser compatibility
-        const response = await fetch('/weather.csv');
+        const response = await fetch(`${process.env.PUBLIC_URL}/data/weather.csv`);
         const fileContent = await response.text();
         
         const parsedData = Papa.parse(fileContent, {

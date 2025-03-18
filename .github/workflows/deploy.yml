@@ -30,6 +30,11 @@ jobs:
           
       - name: Create .nojekyll file
         run: touch build/.nojekyll
+        
+      - name: Ensure CSV data is included
+        run: |
+          mkdir -p build/data
+          cp -r public/data/* build/data/ || true
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
