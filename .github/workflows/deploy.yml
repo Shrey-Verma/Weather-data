@@ -27,9 +27,16 @@ jobs:
         run: npm run build
         env:
           CI: false
+          
+      - name: Create .nojekyll file
+        run: touch build/.nojekyll
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: build # The folder the action should deploy
           branch: gh-pages # The branch the action should deploy to
+          clean: true # Automatically remove deleted files from the deploy branch
+          clean-exclude: |
+            .nojekyll
+            CNAME
