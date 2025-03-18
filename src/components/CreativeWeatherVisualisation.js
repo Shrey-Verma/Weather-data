@@ -634,56 +634,61 @@ const CreativeWeatherVisualization = () => {
             
             {/* Winter data - using a reference area for Jan-Feb and Dec */}
             <ReferenceArea 
-              x1={1} 
-              x2={59} 
-              y1={0} 
-              y2={85} 
-              fill={seasonColors.winter} 
-              fillOpacity={0.2} 
-              stroke="none" 
-            />
-            <ReferenceArea 
-              x1={335} 
-              x2={366} 
-              y1={0} 
-              y2={85} 
-              fill={seasonColors.winter} 
-              fillOpacity={0.2} 
-              stroke="none" 
-            />
-            
-            {/* Spring data */}
-            <ReferenceArea 
-              x1={60} 
-              x2={151} 
-              y1={0} 
-              y2={85} 
-              fill={seasonColors.spring} 
-              fillOpacity={0.2} 
-              stroke="none" 
-            />
-            
-            {/* Summer data */}
-            <ReferenceArea 
-              x1={152} 
-              x2={243} 
-              y1={0} 
-              y2={85} 
-              fill={seasonColors.summer} 
-              fillOpacity={0.2} 
-              stroke="none" 
-            />
-            
-            {/* Fall data */}
-            <ReferenceArea 
-              x1={244} 
-              x2={334} 
-              y1={0} 
-              y2={85} 
-              fill={seasonColors.fall} 
-              fillOpacity={0.2} 
-              stroke="none" 
-            />
+  x1={1} 
+  x2={59} 
+  y1={0} 
+  y2={85} 
+  fill={seasonColors.winter} 
+  fillOpacity={0.2} 
+  stroke="none"
+  label={{ value: "WINTER", position: "insideTop", fill: "#4682B4", fontWeight: "bold" }}
+/>
+<ReferenceArea 
+  x1={335} 
+  x2={366} 
+  y1={0} 
+  y2={85} 
+  fill={seasonColors.winter} 
+  fillOpacity={0.2} 
+  stroke="none" 
+  label={{ value: "WINTER", position: "insideTop", fill: "#4682B4", fontWeight: "bold" }}
+/>
+
+{/* Spring data */}
+<ReferenceArea 
+  x1={60} 
+  x2={151} 
+  y1={0} 
+  y2={85} 
+  fill={seasonColors.spring} 
+  fillOpacity={0.2} 
+  stroke="none" 
+  label={{ value: "SPRING", position: "insideTop", fill: "#3CB371", fontWeight: "bold" }}
+/>
+
+{/* Summer data */}
+<ReferenceArea 
+  x1={152} 
+  x2={243} 
+  y1={0} 
+  y2={85} 
+  fill={seasonColors.summer} 
+  fillOpacity={0.2} 
+  stroke="none" 
+  label={{ value: "SUMMER", position: "insideTop", fill: "#FF8C00", fontWeight: "bold" }}
+/>
+
+{/* Fall data */}
+<ReferenceArea 
+  x1={244} 
+  x2={334} 
+  y1={0} 
+  y2={85} 
+  fill={seasonColors.fall} 
+  fillOpacity={0.2} 
+  stroke="none" 
+  label={{ value: "FALL", position: "insideTop", fill: "#8A2BE2", fontWeight: "bold" }}
+/>
             
             {/* Display the actual temperature line on top */}
             <Line
