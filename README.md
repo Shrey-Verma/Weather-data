@@ -1,7 +1,5 @@
 # Cornell Tech Weather Analysis (1950-2021)
 
-![Temperature Chart](https://i.imgur.com/example.png)
-
 ## Overview
 
 This project visualizes and analyzes historical weather data from Cornell Tech spanning over seven decades (1950-2021). The application provides interactive visualizations to explore temperature patterns, seasonal trends, and climate change indicators.
