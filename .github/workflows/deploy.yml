@@ -30,6 +30,7 @@ jobs:
         run: npm run build
         env:
           CI: false # This prevents the build from failing on warnings
+          PUBLIC_URL: "https://shrey-verma.github.io/Weather-data" # Explicitly set the base path
           
       - name: Setup Pages
         uses: actions/configure-pages@v3
@@ -48,4 +49,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v3
